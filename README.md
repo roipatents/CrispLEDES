@@ -36,7 +36,7 @@ The user interface is quite simple. It consists of a couple of buttons to
 choose the configuration and input files and a list of the generated
 messages:
 
-![](https://lh4.googleusercontent.com/S9jPdS3RMJCnHNhbEpZxPNrGfSV-OVVmr-iCw4lM2T81O9ZgYapUKzFQiI-5S6PXMGpkVZKwe1qOcFlSG0LtjEUIqfxlxpSKpjnVaGrEoOh65f7dMpdzsEPSkeKyAaqvdh3Ftwp-ls2bCLMoPbJHCraqwVWAD6dXcb9_eH0XPWjYpZgwHd8KfQ=w1280)
+![](Interface.png)
 
 The image above shows the result of a successful run of the tool with
 warnings for the input file "invoice\_details (13).csv".
