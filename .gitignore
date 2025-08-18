@@ -1,0 +1,10 @@
+**/.DS_Store
+**/envs/
+**/.ipynb_checkpoints/
+**/bin/
+**/obj/
+**/build/
+**/dist/
+**/.vs/
+**/packages/
+*.user

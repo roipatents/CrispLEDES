@@ -1,0 +1,21 @@
+# This configuration file provides the basic input for the Freshbooks to
+# LEDES converter. Lines beginning with a # are comments.
+#
+# It is assumed that the Freshbooks invoice description includes the
+# billing Timekeeper for that line immediately after a "]" and running
+# until the first ":".
+#
+# The first non-comment line MUST be the tax-id of the firm. It may be
+# followed by an optional comma and the amount above which an invoice
+# generates a warning. The default is 20000 ($20,000).
+#
+# All subsequent lines should be CSV-like with the billing party name,
+# id, role, and optional billing rate, e.g. "John Doe,1,PT,1000", and
+# then on the following line "Jane Doe,2,AS" etc. as per LEDES requirement,
+# "PT" is partner, "AS" is associate, "OC" is counsel, "LA" is  legal
+# assistant and "OT" is other timekeeper. No other abbreviations will be
+# accepted.
+#
+00-0000000,20000
+John Doe,1,PT,1000
+Jane Doe,2,AS,165

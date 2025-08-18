@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Publish" type="DotNetFolderPublish" factoryName="Publish to folder">
+    <riderPublish configuration="Release" delete_existing_files="true" platform="Any CPU" self_contained="true" target_folder="$PROJECT_DIR$/bin/Release/net9.0-macos/publish" target_framework="net9.0-macos" uuid_high="3556579641410339468" uuid_low="-7213969346733633870" />
+    <method v="2" />
+  </configuration>
+</component>

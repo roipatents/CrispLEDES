@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net9.0-macos</TargetFramework>
+        <RuntimeIdentifiers>osx-arm64</RuntimeIdentifiers>
+        <OutputType>Exe</OutputType>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>true</ImplicitUsings>
+        <SupportedOSPlatformVersion>12.0</SupportedOSPlatformVersion>
+        <!--
+          Enable full trimming in Release mode.
+          To learn more, see: https://learn.microsoft.com/dotnet/core/deploying/trimming/trimming-options#trimming-granularity
+        -->
+        <TrimMode Condition="'$(Configuration)' == 'Release'">partial</TrimMode>
+        <Version>1.5.3</Version>
+        <Company>Richardson Oliver Insights, LLC</Company>
+        <AssemblyVersion>1.5.3</AssemblyVersion>
+        <FileVersion>1.5.3</FileVersion>
+        <RootNamespace>FreshbooksLedesConverter</RootNamespace>
+        <AssemblyName>Freshbooks to LEDES Converter</AssemblyName>
+        <Description>Converts Freshbooks invoices in CSV format to LEDES files</Description>
+        <Authors>Richardson Oliver Insights, LLC</Authors>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <UseHardenedRuntime>true</UseHardenedRuntime>
+      <EnableCodeSigning>true</EnableCodeSigning>
+      <CodesignKey>Developer ID Application: Richardson Oliver Law Group LLP (2B7MH5Z594)</CodesignKey>
+      <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
+      <CreatePackage>true</CreatePackage>
+      <EnablePackageSigning>true</EnablePackageSigning>
+      <PackageSigningKey>Developer ID Installer: Richardson Oliver Law Group LLP (2B7MH5Z594)</PackageSigningKey>
+    </PropertyGroup>
+    <ItemGroup>
+      <PackageReference Include="CsvHelper" Version="33.1.0" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Remove="configuration-file.txt" />
+      <Content Include="configuration-file.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+    <Target Name="PreBuild" BeforeTargets="_DetectBuildType">
+      <Exec Command="dotnet restore" />
+    </Target>
+    <Target Name="PostPackage" AfterTargets="_CreateInstaller" Condition=" '$(Configuration)' == 'Release' ">
+      <Exec Command="xcrun notarytool submit '$(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName)-$(Version).pkg' --keychain-profile 'Notary' --wait &amp;&amp; xcrun stapler staple '$(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName)-$(Version).pkg'" />
+    </Target>
+</Project>
