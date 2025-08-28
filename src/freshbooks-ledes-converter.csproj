@@ -11,10 +11,10 @@
           To learn more, see: https://learn.microsoft.com/dotnet/core/deploying/trimming/trimming-options#trimming-granularity
         -->
         <TrimMode Condition="'$(Configuration)' == 'Release'">partial</TrimMode>
-        <Version>1.5.3</Version>
+        <Version>1.5.4</Version>
         <Company>Richardson Oliver Insights, LLC</Company>
-        <AssemblyVersion>1.5.3</AssemblyVersion>
-        <FileVersion>1.5.3</FileVersion>
+        <AssemblyVersion>1.5.4</AssemblyVersion>
+        <FileVersion>1.5.4</FileVersion>
         <RootNamespace>FreshbooksLedesConverter</RootNamespace>
         <AssemblyName>Freshbooks to LEDES Converter</AssemblyName>
         <Description>Converts Freshbooks invoices in CSV format to LEDES files</Description>
