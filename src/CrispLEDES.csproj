@@ -1,3 +1,26 @@
+<!--
+* The MIT License (MIT)
+*
+* Copyright © 2022-2025, Richardson Oliver Insights, LLC, All Rights Reserved
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+-->
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net9.0-macos</TargetFramework>
@@ -11,14 +34,15 @@
           To learn more, see: https://learn.microsoft.com/dotnet/core/deploying/trimming/trimming-options#trimming-granularity
         -->
         <TrimMode Condition="'$(Configuration)' == 'Release'">partial</TrimMode>
-        <Version>1.5.4</Version>
+        <Version>1.5.5</Version>
         <Company>Richardson Oliver Insights, LLC</Company>
-        <AssemblyVersion>1.5.4</AssemblyVersion>
-        <FileVersion>1.5.4</FileVersion>
-        <RootNamespace>FreshbooksLedesConverter</RootNamespace>
-        <AssemblyName>Freshbooks to LEDES Converter</AssemblyName>
+        <AssemblyVersion>1.5.5</AssemblyVersion>
+        <FileVersion>1.5.5</FileVersion>
+        <RootNamespace>CrispLEDES</RootNamespace>
+        <AssemblyName>CrispLEDES</AssemblyName>
         <Description>Converts Freshbooks invoices in CSV format to LEDES files</Description>
         <Authors>Richardson Oliver Insights, LLC</Authors>
+        <Copyright>Copyright © 2022-2025, Richardson Oliver Insights, LLC, All Rights Reserved</Copyright>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
       <UseHardenedRuntime>true</UseHardenedRuntime>

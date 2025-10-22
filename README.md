@@ -1,93 +1,187 @@
-Overview
------------------------------------
+# **CrispLEDES – FreshBooks to LEDES Converter**
 
-The Freshbooks to LEDES Converter is a macOS desktop application written in C#
-that takes a Freshbooks CSV invoice file and converts it to a
-[LEDES 98B REV. 7](https://ledes.org/ledes-98b-format/) formatted text file.
-Additionally, it performs validation and sanity checking on the LEDES invoice
-and provides a list of informational messages, warnings, and errors.
-The program determines whether a given line in the invoice file is an expense,
-adjustment, discount, or standard invoice line. A separate configuration file
-is maintained, with a blank version distributed with the program, but a custom
-configuration file may be selected in its place. The format of the
-configuration file is as follows:
+## **Overview**
 
-*   Lines that start with "#" are comments.
+CrispLEDES is a lightweight **macOS desktop application** written in C\#. It converts FreshBooks invoice CSV files into the **LEDES 98B REV. 7** format required by most corporate clients’ e-billing systems. The tool also validates invoice data, performs sanity checks, and generates clear feedback messages — helping law firms avoid rejected invoices and delayed payments.
 
+CrispLEDES was created and is maintained by **Richardson Oliver LLP**.
 
-*   The first uncommented line must be the tax ID number of the law firm. It
-may be followed by an optional comma and the amount above which an invoice
-generates a warning. The default is 20000 ($20,000).
+This project is released under the **MIT License** (see LICENSE.md).
 
+## **Features**
 
-*   Subsequent uncommented lines are timekeepers in the form
-&lt;name>,&lt;integer identifier>,&lt;LEDES timekeeper classification
-code>,&lt;optional timekeeper's hourly rate>
+* Convert FreshBooks CSV invoices into LEDES 98B REV. 7 text files.
 
-The LEDES file, a copy of the configuration file, a CSV equivalent of the
-LEDES data, a CSV summary of the invoices, a copy of the input CSV, and a
-log of any generated messages are created using date-stamped filenames
-based upon the input file name in the same directory as the input file.
+* Perform **validation checks** for:
 
-User Interface
------------------------------------------
+  * Proper invoice structure (start/end dates required).
 
-The user interface is quite simple. It consists of a couple of buttons to
-choose the configuration and input files and a list of the generated
-messages:
+  * Narrative length and banned keywords.
 
-![](Interface.png)
+  * Timekeeper codes, classifications, and rates.
 
-The image above shows the result of a successful run of the tool with
-warnings for the input file "invoice\_details (13).csv".
+  * Billing in tenths of an hour.
 
-Validations
---------------------------------------
+  * Expense thresholds (e.g., \>$5,000 flagged).
 
-*   Invoices are required to start with a standard invoice line that
-includes beginning and ending date information before any other line type
-may appear.
+  * Invoice totals exceeding configured limits (default $20,000).
 
-  
-* Standard line items are expected to have a description of the following
-form (line breaks and indentation are for readability):\
-\
-    (\
-    &nbsp;&nbsp;&nbsp;&nbsp;&lt;4 letter internal client code>-&lt;4 character alphanumeric code that disambiguates the matter number>\
-    &nbsp;&nbsp;&nbsp;&nbsp;&lt;optional description>\
-    &nbsp;&nbsp;&nbsp;&nbsp;&lt;optional client matter number prefaced with "##">\
-    )&lt;optional whitespace>\
-    &lt;timekeeper code>&lt;optional whitespace>-&lt;optional whitespace>\
-    &lt;the invoice line date in "MMM d, yyyy" format, e.g. Jan 3, 2025>&lt;whitespace>\
-    &lt;optional narrative>\
-    &lt;optional [UTBMS](https://utbms.com/) code prefaced with "##">&lt;optional whitespace>
+* Identify line types automatically (expense, adjustment, discount, or standard).
 
+* Generate multiple helpful outputs:
 
-*   A warning is generated if the narrative has more than 30 words or if it
-contains certain keywords that tend to annoy clients, a possible patent
-number, or an indication of a flat fee.
+  * LEDES invoice file
 
+  * Copy of configuration file
 
-*   Standard line items should be billed in tenths of an hour, otherwise a
-warning is generated.
+  * CSV equivalent of LEDES data
 
+  * CSV invoice summary
 
-*   The rate for an active timekeeper on a standard line item should not be
-zero (indicating that we don't know what their standard rate should be),
-otherwise a warning is generated.
+  * Input CSV copy
 
+  * Log of messages, warnings, and errors
 
-*   If the timekeeper has an assigned rate then the standard line item rate
-should match, otherwise a warning is generated.
+## **Configuration File**
 
+CrispLEDES relies on a configuration file to map timekeepers and enforce firm-specific rules.
 
-*   Other line types can also have an optional UTBMS code prefaced with "##"
-in their descriptions.
+* First non-comment line \= **law firm tax ID** (optionally followed by a warning threshold for invoice totals).
 
+* Subsequent lines \= **timekeepers**, in the format:
 
-*   Expenses greater than $5K generate a warning.
+  ```
+  Name,Identifier,RoleCode,OptionalRate
+  ```
 
+  * Example: Jane Doe,2,AS,165
 
-*   A warning is generated if a given invoice has line items totaling over
-the invoice warning amount from the configuration file ($20K if not provided).
+* Supported roles include:
+
+  * PT – Partner
+
+  * AS – Associate
+
+  * OC – Counsel
+
+  * LA – Legal Assistant
+
+  * OT – Other Timekeeper
+
+See configuration-file.txt for a working example.
+
+## **User Interface**
+
+The UI is intentionally minimal:
+
+* Select your configuration file.
+
+* Select your FreshBooks CSV invoice file.
+
+* Review the list of messages generated during conversion.
+
+If issues are detected (e.g., incorrect timekeeper rate, overlong narratives, or totals above thresholds), CrispLEDES provides warnings or errors so you can fix the data before submission.
+
+## **Example Validation Rules**
+
+* Narratives over 30 words generate warnings.
+
+* Narratives containing certain keywords, possible patent numbers, or flat-fee indications generate warnings.
+
+* Standard line items must have consistent timekeeper rates.
+
+* Expenses \> $5,000 or invoices \> $20,000 generate warnings.
+
+## **Installation**
+
+1. Download the latest CrispLEDES release from the [Releases page](https://github.com/roipatents/CrispLEDES/releases).
+
+2. Open the .pkg file and follow the prompts for installation.
+
+3. (Optional) Update your configuration file to reflect your firm’s tax ID, timekeepers, and rates.
+
+## **Usage**
+
+1. Export invoices from FreshBooks as CSV.
+
+2. Open CrispLEDES.
+
+3. Select your configuration file and invoice file.
+
+4. Review messages, warnings, and errors.
+
+5. Submit the generated LEDES 98B file to your client’s e-billing system.
+
+## **Quick Start (Sample Inputs & Output)**
+
+Below is a simple, copy-pasteable walkthrough that shows the expected shape of inputs and the kind of LEDES output CrispLEDES generates.
+
+### **1\) Sample configuration file**
+
+Save as configuration.txt and select it in the app when prompted.
+
+```
+00-0000000,20000
+John Doe,1,PT,1000
+Jane Doe,2,AS,165
+```
+
+### **2\) Sample FreshBooks CSV (minimal)**
+
+Save as invoice\_details.csv. Only essential columns are shown here for clarity.
+
+```
+Client,Matter,Date,Description,Hours,Rate,Amount,Type
+ACME Corp,Prosecution,2025-01-03,"(ABCD-1A2B Optional description ##CL12345) TK1 - Jan 3, 2025 Draft office action response ##L110",2.5,165,412.50,FEE
+ACME Corp,Prosecution,2025-01-04,"(ABCD-1A2B) TK2 - Jan 4, 2025 Prior art search ##L320",1.0,1000,1000.00,FEE
+ACME Corp,Prosecution,2025-01-05,"(ABCD-1A2B) Expense: USPTO filing fee ##E101",,,$760.00,EXPENSE
+```
+
+*   
+  The parenthetical header (...) includes your internal client/matter code and optional client matter number \#\#CL....
+
+* TK1 / TK2 are your timekeeper codes.
+
+* An optional UTBMS code can appear at the end of the description, prefixed with \#\# (e.g., \#\#L110).
+
+### **3\) Example LEDES 98B output (excerpt)**
+
+CrispLEDES produces a pipe-delimited LEDES 98B text file. Below is a **representative excerpt** (fields and values will reflect your configuration and invoice data):
+
+```
+INVOICE_DATE|INVOICE_NUMBER|CLIENT_ID|LAW_FIRM_MATTER_ID|INVOICE_TOTAL|...|LINE_ITEM_NUMBER|EXP/FEE/ADR|LINE_ITEM_DATE|TIMEKEEPER_ID|TASK_CODE|LINE_ITEM_AMOUNT|LINE_ITEM_UNITS|LINE_ITEM_RATE|LINE_ITEM_DESCRIPTION
+20250106|INV-2025-0001|ACME|ABCD-1A2B|2172.50|...|1|F|20250103|2|L110|412.50|2.5|165.00|Draft office action response
+20250106|INV-2025-0001|ACME|ABCD-1A2B|2172.50|...|2|F|20250104|1|L320|1000.00|1.0|1000.00|Prior art search
+20250106|INV-2025-0001|ACME|ABCD-1A2B|2172.50|...|3|E|20250105|||E101|760.00|||USPTO filing fee
+```
+
+Tip: The app also generates summary.csv, details.csv, a copy of your input CSV, the configuration file used, and a messages.log with warnings and errors.
+
+### **4\) Common issues (and how to fix)**
+
+* **Narrative too long**: tighten to \~30 words.
+
+* **Mismatched/zero timekeeper rate**: update rate in configuration or the line item.
+
+* **Non-tenth hour increments**: adjust hours (e.g., 1.3 → 1.3 is OK; 1.33 → 1.3).
+
+* **High expense or invoice total**: confirm justification or split invoices if appropriate.
+
+## **License**
+
+This project is licensed under the MIT License. See the LICENSE.md file for details.
+
+## **Contributing**
+
+Contributions are welcome\! Please fork the repo, submit pull requests, or open issues to suggest improvements.
+
+## **Acknowledgments**
+
+* LEDES format reference: [LEDES.org](https://ledes.org/ledes-98b-format/)
+
+* UTBMS code reference: [UTBMS.com](https://utbms.com/)
+
+## **Attribution**
+
+CrispLEDES was created and is maintained by **Richardson Oliver LLP**.
 
