@@ -49,7 +49,7 @@
       <EnableCodeSigning>true</EnableCodeSigning>
       <CodesignKey>Developer ID Application: Richardson Oliver Law Group LLP (2B7MH5Z594)</CodesignKey>
       <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
-      <CreatePackage>true</CreatePackage>
+      <CreatePackage>false</CreatePackage>
       <EnablePackageSigning>true</EnablePackageSigning>
       <PackageSigningKey>Developer ID Installer: Richardson Oliver Law Group LLP (2B7MH5Z594)</PackageSigningKey>
     </PropertyGroup>
@@ -62,11 +62,46 @@
       <Content Include="configuration-file.txt">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+      <None Include="distribution.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <PublishFolderType>None</PublishFolderType>
+      </None>
+      <Content Remove="background.png"/>
+      <None Include="background.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <PublishFolderType>None</PublishFolderType>
+      </None>
+      <Content Remove="LICENSE.html"/>
+      <None Include="LICENSE.html">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <PublishFolderType>None</PublishFolderType>
+      </None>
+      <Content Remove="README.html"/>
+      <None Include="README.html">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <PublishFolderType>None</PublishFolderType>
+      </None>
     </ItemGroup>
+    <Target Name="ReplaceXmlText" BeforeTargets="_CreateInstaller">
+      <PropertyGroup Condition=" '$(DistributionPath)' == '' ">
+        <DistributionPath>$(MSBuildProjectDirectory)/$(OutputPath)osx-arm64/</DistributionPath>
+      </PropertyGroup>
+      <PropertyGroup Condition=" '$(DistributionFile)' == '' ">
+        <DistributionFile>$(DistributionPath)distribution.xml</DistributionFile>
+      </PropertyGroup>
+      <XmlPoke XmlInputPath="$(DistributionFile)" Query="/installer-gui-script/title" Value="$(AssemblyName)"/>
+      <XmlPoke XmlInputPath="$(DistributionFile)" Query="/installer-gui-script/choice[@id = 'default']/@title" Value="$(AssemblyName)"/>
+      <XmlPoke XmlInputPath="$(DistributionFile)" Query="/installer-gui-script/choice[@id = 'default']/@versStr" Value="$(AssemblyVersion)"/>
+      <XmlPoke XmlInputPath="$(DistributionFile)" Query="/installer-gui-script/choice[@id = 'com.roipatents.crispledes']/@title" Value="$(AssemblyName)"/>
+      <XmlPoke XmlInputPath="$(DistributionFile)" Query="/installer-gui-script/choice[@id = 'com.roipatents.crispledes']/pkg-ref[@id = 'com.roipatents.crispledes']/@version" Value="$(AssemblyVersion)"/>
+      <XmlPoke XmlInputPath="$(DistributionFile)" Query="/installer-gui-script/choice[@id = 'com.roipatents.crispledes']/pkg-ref[@id = 'com.roipatents.crispledes']" Value="com.roipatents.crispledes.pkg"/>
+    </Target>
     <Target Name="PreBuild" BeforeTargets="_DetectBuildType">
       <Exec Command="dotnet restore" />
     </Target>
     <Target Name="PostPackage" AfterTargets="_CreateInstaller" Condition=" '$(Configuration)' == 'Release' ">
-      <Exec Command="xcrun notarytool submit '$(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName)-$(Version).pkg' --keychain-profile 'Notary' --wait &amp;&amp; xcrun stapler staple '$(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName)-$(Version).pkg'" />
+      <Exec Command="xcrun pkgbuild --component &quot;$(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName).app&quot; --install-location /Applications --sign &quot;$(PackageSigningKey)&quot; --timestamp &quot;$(MSBuildProjectDirectory)/$(OutputPath)com.roipatents.crispledes.pkg&quot;" />
+      <Exec Command="xcrun productbuild --distribution &quot;$(DistributionFile)&quot; --package-path &quot;$(MSBuildProjectDirectory)/$(OutputPath)&quot; --resources &quot;$(DistributionPath)&quot; --sign &quot;$(PackageSigningKey)&quot; &quot;$(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName)-$(Version).pkg&quot;" />
+      <Exec Command="xcrun notarytool submit &quot;$(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName)-$(Version).pkg&quot; --keychain-profile &quot;Notary&quot; --wait &amp;&amp; xcrun stapler staple &quot;$(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName)-$(Version).pkg&quot;" />
     </Target>
 </Project>

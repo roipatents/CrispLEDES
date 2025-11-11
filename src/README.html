@@ -1,0 +1,175 @@
+<html lang="en">
+<head>
+    <title>README</title>
+    <meta charset="utf-8">
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+<h1 id="-crispledes-freshbooks-to-ledes-converter-"><strong>CrispLEDES - FreshBooks to LEDES Converter</strong></h1>
+<h2 id="-overview-"><strong>Overview</strong></h2>
+<p>CrispLEDES is a lightweight <strong>macOS desktop application</strong> written in C#. It converts FreshBooks invoice CSV files into the <strong>LEDES 98B REV. 7</strong> format required by most corporate clients’ e-billing systems. The tool also validates invoice data, performs sanity checks, and generates clear feedback messages — helping law firms avoid rejected invoices and delayed payments.</p>
+<p>CrispLEDES was created and is maintained by <strong>Richardson Oliver LLP</strong>.</p>
+<p>This project is released under the <strong>MIT License</strong> (see LICENSE.md).</p>
+<h2 id="-features-"><strong>Features</strong></h2>
+<ul>
+    <li><p>Convert FreshBooks CSV invoices into LEDES 98B REV. 7 text files.</p>
+    </li>
+    <li><p>Perform <strong>validation checks</strong> for:</p>
+        <ul>
+            <li><p>Proper invoice structure (start/end dates required).</p>
+            </li>
+            <li><p>Narrative length and banned keywords.</p>
+            </li>
+            <li><p>Timekeeper codes, classifications, and rates.</p>
+            </li>
+            <li><p>Billing in tenths of an hour.</p>
+            </li>
+            <li><p>Expense thresholds (e.g., >$5,000 flagged).</p>
+            </li>
+            <li><p>Invoice totals exceeding configured limits (default $20,000).</p>
+            </li>
+        </ul>
+    </li>
+    <li><p>Identify line types automatically (expense, adjustment, discount, or standard).</p>
+    </li>
+    <li><p>Generate multiple helpful outputs:</p>
+        <ul>
+            <li><p>LEDES invoice file</p>
+            </li>
+            <li><p>Copy of the configuration file</p>
+            </li>
+            <li><p>CSV equivalent of LEDES data</p>
+            </li>
+            <li><p>CSV invoice summary</p>
+            </li>
+            <li><p>Input CSV copy</p>
+            </li>
+            <li><p>Log of messages, warnings, and errors</p>
+            </li>
+        </ul>
+    </li>
+</ul>
+<h2 id="-configuration-file-"><strong>Configuration File</strong></h2>
+<p>CrispLEDES relies on a configuration file to map timekeepers and enforce firm-specific rules.</p>
+<ul>
+    <li><p>First non-comment line \= <strong>law firm tax ID</strong> (optionally followed by a warning threshold for invoice totals).</p>
+    </li>
+    <li><p>Subsequent lines \= <strong>timekeepers</strong>, in the format:</p>
+        <pre><code><span class="hljs-keyword">Name</span>,Identifier,RoleCode,OptionalRate
+</code></pre><ul>
+            <li>Example: Jane Doe,2,AS,165</li>
+        </ul>
+    </li>
+    <li><p>Supported roles include:</p>
+        <ul>
+            <li><p>PT – Partner</p>
+            </li>
+            <li><p>AS – Associate</p>
+            </li>
+            <li><p>OC – Counsel</p>
+            </li>
+            <li><p>LA – Legal Assistant</p>
+            </li>
+            <li><p>OT – Other Timekeeper</p>
+            </li>
+        </ul>
+    </li>
+</ul>
+<p>See configuration-file.txt for a working example.</p>
+<h2 id="-user-interface-"><strong>User Interface</strong></h2>
+<p>The UI is intentionally minimal:</p>
+<ul>
+    <li><p>Select your configuration file.</p>
+    </li>
+    <li><p>Select your FreshBooks CSV invoice file.</p>
+    </li>
+    <li><p>Review the list of messages generated during conversion.</p>
+    </li>
+</ul>
+<p>If issues are detected (e.g., incorrect timekeeper rate, overlong narratives, or totals above thresholds), CrispLEDES provides warnings or errors so you can fix the data before submission.</p>
+<h2 id="-example-validation-rules-"><strong>Example Validation Rules</strong></h2>
+<ul>
+    <li><p>Narratives over 30 words generate warnings.</p>
+    </li>
+    <li><p>Narratives containing certain keywords, possible patent numbers, or flat-fee indications generate warnings.</p>
+    </li>
+    <li><p>Standard line items must have consistent timekeeper rates.</p>
+    </li>
+    <li><p>Expenses > $5,000 or invoices > $20,000 generate warnings.</p>
+    </li>
+</ul>
+<h2 id="-installation-"><strong>Installation</strong></h2>
+<ol>
+    <li><p>Download the latest CrispLEDES release from the <a href="https://github.com/roipatents/CrispLEDES/releases">Releases page</a>.</p>
+    </li>
+    <li><p>Open the .pkg file and follow the prompts for installation.</p>
+    </li>
+    <li><p>(Optional) Update your configuration file to reflect your firm’s tax ID, timekeepers, and rates.</p>
+    </li>
+</ol>
+<h2 id="-usage-"><strong>Usage</strong></h2>
+<ol>
+    <li><p>Export invoices from FreshBooks as CSV.</p>
+    </li>
+    <li><p>Open CrispLEDES.</p>
+    </li>
+    <li><p>Select your configuration file and invoice file.</p>
+    </li>
+    <li><p>Review messages, warnings, and errors.</p>
+    </li>
+    <li><p>Submit the generated LEDES 98B file to your client’s e-billing system.</p>
+    </li>
+</ol>
+<h2 id="-quick-start-sample-inputs-output-"><strong>Quick Start (Sample Inputs &amp; Output)</strong></h2>
+<p>Below is a simple, copy-pasteable walkthrough that shows the expected shape of inputs and the kind of LEDES output CrispLEDES generates.</p>
+<h3 id="-1-sample-configuration-file-"><strong>1) Sample configuration file</strong></h3>
+<p>Save as configuration.txt and select it in the app when prompted.</p>
+<pre><code><span class="hljs-number">00</span><span class="hljs-number">-0000000</span>,<span class="hljs-number">20000</span>
+John Doe,<span class="hljs-number">1</span>,PT,<span class="hljs-number">1000</span>
+Jane Doe,<span class="hljs-number">2</span>,AS,<span class="hljs-number">165</span>
+</code></pre><h3 id="-2-sample-freshbooks-csv-minimal-"><strong>2) Sample FreshBooks CSV (minimal)</strong></h3>
+<p>Save as invoice_details.csv. Only essential columns are shown here for clarity.</p>
+<pre><code>Client,Matter,Date,Description,Hours,Rate,Amount,Type
+ACME Corp,Prosecution,<span class="hljs-number">2025</span><span class="hljs-number">-01</span><span class="hljs-number">-03</span>,<span class="hljs-string">"(ABCD-1A2B Optional description ##CL12345) TK1 - Jan 3, 2025 Draft office action response ##L110"</span>,<span class="hljs-number">2.5</span>,<span class="hljs-number">165</span>,<span class="hljs-number">412.50</span>,FEE
+ACME Corp,Prosecution,<span class="hljs-number">2025</span><span class="hljs-number">-01</span><span class="hljs-number">-04</span>,<span class="hljs-string">"(ABCD-1A2B) TK2 - Jan 4, 2025 Prior art search ##L320"</span>,<span class="hljs-number">1.0</span>,<span class="hljs-number">1000</span>,<span class="hljs-number">1000.00</span>,FEE
+ACME Corp,Prosecution,<span class="hljs-number">2025</span><span class="hljs-number">-01</span><span class="hljs-number">-05</span>,<span class="hljs-string">"(ABCD-1A2B) Expense: USPTO filing fee ##E101"</span>,,,$<span class="hljs-number">760.00</span>,EXPENSE
+</code></pre><ul>
+    <li><p>The parenthetical header (...) includes your internal client/matter code and optional client matter number ##CL....</p>
+    </li>
+    <li><p>TK1 / TK2 are your timekeeper codes.</p>
+    </li>
+    <li><p>An optional UTBMS code can appear at the end of the description, prefixed with ## (e.g., ##L110).</p>
+    </li>
+</ul>
+<h3 id="-3-example-ledes-98b-output-excerpt-"><strong>3) Example LEDES 98B output (excerpt)</strong></h3>
+<p>CrispLEDES produces a pipe-delimited LEDES 98B text file. Below is a <strong>representative excerpt</strong> (fields and values will reflect your configuration and invoice data):</p>
+<pre><code>INVOICE_DATE|<span class="hljs-string">INVOICE_NUMBER</span>|<span class="hljs-string">CLIENT_ID</span>|<span class="hljs-string">LAW_FIRM_MATTER_ID</span>|<span class="hljs-string">INVOICE_TOTAL</span>|<span class="hljs-string">...</span>|<span class="hljs-string">LINE_ITEM_NUMBER</span>|<span class="hljs-string">EXP/FEE/ADR</span>|<span class="hljs-string">LINE_ITEM_DATE</span>|<span class="hljs-string">TIMEKEEPER_ID</span>|<span class="hljs-string">TASK_CODE</span>|<span class="hljs-string">LINE_ITEM_AMOUNT</span>|<span class="hljs-string">LINE_ITEM_UNITS</span>|<span class="hljs-string">LINE_ITEM_RATE</span>|LINE_ITEM_DESCRIPTION
+20250106|<span class="hljs-string">INV-2025-0001</span>|<span class="hljs-string">ACME</span>|<span class="hljs-string">ABCD-1A2B</span>|<span class="hljs-string">2172.50</span>|<span class="hljs-string">...</span>|<span class="hljs-string">1</span>|<span class="hljs-string">F</span>|<span class="hljs-string">20250103</span>|<span class="hljs-string">2</span>|<span class="hljs-string">L110</span>|<span class="hljs-string">412.50</span>|<span class="hljs-string">2.5</span>|<span class="hljs-string">165.00</span>|<span class="hljs-string">Draft office action response
+20250106</span>|<span class="hljs-string">INV-2025-0001</span>|<span class="hljs-string">ACME</span>|<span class="hljs-string">ABCD-1A2B</span>|<span class="hljs-string">2172.50</span>|<span class="hljs-string">...</span>|<span class="hljs-string">2</span>|<span class="hljs-string">F</span>|<span class="hljs-string">20250104</span>|<span class="hljs-string">1</span>|<span class="hljs-string">L320</span>|<span class="hljs-string">1000.00</span>|<span class="hljs-string">1.0</span>|<span class="hljs-string">1000.00</span>|<span class="hljs-string">Prior art search
+20250106</span>|<span class="hljs-string">INV-2025-0001</span>|<span class="hljs-string">ACME</span>|<span class="hljs-string">ABCD-1A2B</span>|<span class="hljs-string">2172.50</span>|<span class="hljs-string">...</span>|<span class="hljs-string">3</span>|<span class="hljs-string">E</span>|<span class="hljs-string">20250105</span>|||<span class="hljs-string">E101</span>|<span class="hljs-string">760.00</span>|||<span class="hljs-string">USPTO filing fee</span>
+</code></pre><p>Tip: The app also generates summary.csv, details.csv, a copy of your input CSV, the configuration file used, and a messages.log with warnings and errors.</p>
+<h3 id="-4-common-issues-and-how-to-fix-"><strong>4) Common issues (and how to fix)</strong></h3>
+<ul>
+    <li><p><strong>Narrative too long</strong>: tighten to ~30 words.</p>
+    </li>
+    <li><p><strong>Mismatched/zero timekeeper rate</strong>: update rate in configuration or the line item.</p>
+    </li>
+    <li><p><strong>Non-tenth hour increments</strong>: adjust hours (e.g., 1.3 → 1.3 is OK; 1.33 → 1.3).</p>
+    </li>
+    <li><p><strong>High expense or invoice total</strong>: confirm justification or split invoices if appropriate.</p>
+    </li>
+</ul>
+<h2 id="-license-"><strong>License</strong></h2>
+<p>This project is licensed under the MIT License. See the LICENSE.md file for details.</p>
+<h2 id="-contributing-"><strong>Contributing</strong></h2>
+<p>Contributions are welcome! Please fork the repo, submit pull requests, or open issues to suggest improvements.</p>
+<h2 id="-acknowledgments-"><strong>Acknowledgments</strong></h2>
+<ul>
+    <li><p>LEDES format reference: <a href="https://ledes.org/ledes-98b-format/">LEDES.org</a></p>
+    </li>
+    <li><p>UTBMS code reference: <a href="https://utbms.com/">UTBMS.com</a></p>
+    </li>
+</ul>
+<h2 id="-attribution-"><strong>Attribution</strong></h2>
+<p>CrispLEDES was created and is maintained by <strong>Richardson Oliver LLP</strong>.</p>
+</body>
+</html>
