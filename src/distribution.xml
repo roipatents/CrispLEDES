@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <installer-gui-script minSpecVersion="2">
   <title>$(AssemblyName)</title>
-  <background file="background.png" mime-type="image/png" scaling="tofit" />
-  <readme file="README.html" mime-type="text/html" />
-  <license file="LICENSE.html" mime-type="text/html" />
+  <background file="background.png" mime-type="image/png" scaling="tofit"/>
+  <readme file="README.html" mime-type="text/html"/>
+  <license file="LICENSE.html" mime-type="text/html"/>
   <options customize="never" require-scripts="false" hostArchitectures="arm64"/>
   <choice id="default" title="$(AssemblyName)" versStr="$(AssemblyVersion)"/>
   <choice id="com.roipatents.crispledes" title="$(AssemblyName)" visible="false" customLocation="/Applications">

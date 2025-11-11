@@ -34,10 +34,10 @@
           To learn more, see: https://learn.microsoft.com/dotnet/core/deploying/trimming/trimming-options#trimming-granularity
         -->
         <TrimMode Condition="'$(Configuration)' == 'Release'">partial</TrimMode>
-        <Version>1.5.5</Version>
+        <Version>1.5.6</Version>
         <Company>Richardson Oliver Insights, LLC</Company>
-        <AssemblyVersion>1.5.5</AssemblyVersion>
-        <FileVersion>1.5.5</FileVersion>
+        <AssemblyVersion>1.5.6</AssemblyVersion>
+        <FileVersion>1.5.6</FileVersion>
         <RootNamespace>CrispLEDES</RootNamespace>
         <AssemblyName>CrispLEDES</AssemblyName>
         <Description>Converts Freshbooks invoices in CSV format to LEDES files</Description>
