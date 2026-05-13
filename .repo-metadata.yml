@@ -1,0 +1,7 @@
+schema_version: 1
+short_description: macOS (C#) program that converts FreshBooks invoice CSV exports into LEDES 98B REV. 7 billing text files.
+hidden: false
+mdm_deploy: true
+# Allowed: One off, Preproduction, Production, Deprecated
+readiness: Production
+primary_owner: ttrias@richardsonoliver.com
