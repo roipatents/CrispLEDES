@@ -13,3 +13,4 @@
 - [x] Commit and push separate structural and release-packaging changes to `main`.
 - [x] Publish `v.1.5.8` from exact `main` commit `80472348528b5d55041a7107c4166611a68ff7d4` with the verified package asset.
 - [x] Keep the public repository excluded from JAMF; only the private package is MDM deployable.
+- [x] Mark the public repository metadata as not deployable through MDM.
