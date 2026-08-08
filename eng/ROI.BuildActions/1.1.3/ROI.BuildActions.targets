@@ -7,7 +7,7 @@
   <PropertyGroup Condition="'$(RoiBuildActionsEnableRichardsonOliverMacSigningDefaults)' == 'true'">
     <RoiBuildActionsMacApplicationSigningKey Condition="'$(RoiBuildActionsMacApplicationSigningKey)' == ''">Developer ID Application: Richardson Oliver Law Group LLP (2B7MH5Z594)</RoiBuildActionsMacApplicationSigningKey>
     <RoiBuildActionsMacInstallerSigningKey Condition="'$(RoiBuildActionsMacInstallerSigningKey)' == ''">Developer ID Installer: Richardson Oliver Law Group LLP (2B7MH5Z594)</RoiBuildActionsMacInstallerSigningKey>
-    <RoiBuildActionsNotaryToolKeychainProfile Condition="'$(RoiBuildActionsNotaryToolKeychainProfile)' == ''">Notary</RoiBuildActionsNotaryToolKeychainProfile>
+    <RoiBuildActionsNotaryToolKeychainProfile Condition="'$(RoiBuildActionsNotaryToolKeychainProfile)' == ''">rol-profile</RoiBuildActionsNotaryToolKeychainProfile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(RoiBuildActionsEnableMacNotarizedPackage)' == 'true'">
