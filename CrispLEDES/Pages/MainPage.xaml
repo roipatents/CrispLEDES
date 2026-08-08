@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pageModels="clr-namespace:CrispLEDES.PageModels"
+    x:Class="CrispLEDES.Pages.MainPage"
+    x:DataType="pageModels:MainPageModel"
+    Title="CrispLEDES">
+    <ContentPage.MenuBarItems>
+        <MenuBarItem Text="File">
+            
+        </MenuBarItem>
+        <MenuBarItem Text="Edit">
+            <MenuFlyoutItem Text="Copy" Clicked="OnCopySelectedClicked">
+                <MenuFlyoutItem.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Cmd" Key="C" />
+                    <KeyboardAccelerator Modifiers="Ctrl" Key="C" />
+                </MenuFlyoutItem.KeyboardAccelerators>
+            </MenuFlyoutItem>
+        </MenuBarItem>
+    </ContentPage.MenuBarItems>
+
+    <Grid RowDefinitions="Auto,*" Padding="10" RowSpacing="8">
+        <HorizontalStackLayout Grid.Row="0" Spacing="10" HorizontalOptions="Center">
+            <Button
+                x:Name="ChooseConfigurationButton"
+                Text="Choose Configuration File"
+                Clicked="OnChooseConfigurationClicked" />
+            <Button
+                x:Name="ChooseCsvButton"
+                Text="Choose Invoice CSV Files"
+                Clicked="OnChooseCsvClicked" />
+        </HorizontalStackLayout>
+
+        <Grid Grid.Row="1" RowDefinitions="Auto,*" RowSpacing="0">
+            <Grid
+                RowDefinitions="Auto"
+                ColumnDefinitions="60,100,110,*"
+                BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#1F1F1F}"
+                Padding="6">
+                <Label Text="Time" HorizontalTextAlignment="End" FontAttributes="Bold" />
+                <Label Grid.Column="1" Text="Entry Type" HorizontalTextAlignment="Center" FontAttributes="Bold" />
+                <Label Grid.Column="2" Text="File Name" FontAttributes="Bold" />
+                <Label Grid.Column="3" Text="Message" FontAttributes="Bold" />
+            </Grid>
+
+            <CollectionView
+                Grid.Row="1"
+                ItemsSource="{Binding MessageInfoArray}"
+                SelectionMode="Multiple"
+                SelectionChanged="OnMessagesSelectionChanged">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid
+                            ColumnDefinitions="60,100,110,*"
+                            Padding="6"
+                            RowDefinitions="Auto">
+                            <Label
+                                Text="{Binding Time, StringFormat='{0:t}'}"
+                                HorizontalTextAlignment="End"
+                                TextColor="{Binding EntryTypeColor}" />
+                            <Label
+                                Grid.Column="1"
+                                Text="{Binding EntryType}"
+                                HorizontalTextAlignment="Center"
+                                TextColor="{Binding EntryTypeColor}" />
+                            <Label
+                                Grid.Column="2"
+                                Text="{Binding BaseFilename}"
+                                LineBreakMode="TailTruncation"
+                                TextColor="{Binding EntryTypeColor}" />
+                            <Label
+                                Grid.Column="3"
+                                Text="{Binding Message}"
+                                LineBreakMode="TailTruncation"
+                                TextColor="{Binding EntryTypeColor}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </Grid>
+</ContentPage>
