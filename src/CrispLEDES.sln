@@ -25,7 +25,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrispLEDES", "CrispLEDES.csproj", "{315B8257-1DA6-428C-9BE2-D519B3628EB2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrispLEDES.Mac", "CrispLEDES.Mac.csproj", "{315B8257-1DA6-428C-9BE2-D519B3628EB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrispLEDES", "..\CrispLEDES\CrispLEDES.csproj", "{28D3F523-E0BF-4DF4-895B-D8256AEDB81F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{315B8257-1DA6-428C-9BE2-D519B3628EB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{315B8257-1DA6-428C-9BE2-D519B3628EB2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{315B8257-1DA6-428C-9BE2-D519B3628EB2}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{28D3F523-E0BF-4DF4-895B-D8256AEDB81F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28D3F523-E0BF-4DF4-895B-D8256AEDB81F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28D3F523-E0BF-4DF4-895B-D8256AEDB81F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28D3F523-E0BF-4DF4-895B-D8256AEDB81F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

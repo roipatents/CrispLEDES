@@ -95,7 +95,8 @@ public static class Common
         {
             return currentPath;
         }
-        currentPath = NSBundle.MainBundle.PathForResource("configuration-file", "txt");
+        currentPath = NSBundle.MainBundle.PathForResource("configuration-file", "txt")
+                      ?? throw new InvalidOperationException("The bundled CrispLEDES configuration file is missing.");
         NSUserDefaults.StandardUserDefaults.SetString(currentPath, ConfigFileKey);
         return currentPath;
     }

@@ -1,7 +1,7 @@
 <!--
 * The MIT License (MIT)
 *
-* Copyright © 2022-2025, Richardson Oliver Insights, LLC, All Rights Reserved
+* Copyright © 2022-2026, Richardson Oliver Insights, LLC, All Rights Reserved
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -23,39 +23,34 @@
 -->
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net9.0-macos</TargetFramework>
+        <TargetFramework>net10.0-macos</TargetFramework>
         <RuntimeIdentifiers>osx-arm64</RuntimeIdentifiers>
         <OutputType>Exe</OutputType>
         <Nullable>enable</Nullable>
         <ImplicitUsings>true</ImplicitUsings>
         <SupportedOSPlatformVersion>12.0</SupportedOSPlatformVersion>
-        <!--
-          Enable full trimming in Release mode.
-          To learn more, see: https://learn.microsoft.com/dotnet/core/deploying/trimming/trimming-options#trimming-granularity
-        -->
-        <TrimMode Condition="'$(Configuration)' == 'Release'">partial</TrimMode>
-        <Version>1.5.6</Version>
+        <!-- Preserve framework code used dynamically by CSV/XML processing in deployment builds. -->
+        <TrimMode Condition="'$(Configuration)' == 'Release'">copy</TrimMode>
+        <Version>1.5.8</Version>
         <Company>Richardson Oliver Insights, LLC</Company>
-        <AssemblyVersion>1.5.6</AssemblyVersion>
-        <FileVersion>1.5.6</FileVersion>
+        <AssemblyVersion>1.5.8</AssemblyVersion>
+        <FileVersion>1.5.8</FileVersion>
         <RootNamespace>CrispLEDES</RootNamespace>
         <AssemblyName>CrispLEDES</AssemblyName>
         <Description>Converts Freshbooks invoices in CSV format to LEDES files</Description>
         <Authors>Richardson Oliver Insights, LLC</Authors>
-        <Copyright>Copyright © 2022-2025, Richardson Oliver Insights, LLC, All Rights Reserved</Copyright>
+        <Copyright>Copyright © 2022-2026, Richardson Oliver Insights, LLC, All Rights Reserved</Copyright>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <UseHardenedRuntime>true</UseHardenedRuntime>
-      <EnableCodeSigning>true</EnableCodeSigning>
-      <CodesignKey>Developer ID Application: Richardson Oliver Law Group LLP (2B7MH5Z594)</CodesignKey>
-      <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
-      <CreatePackage>false</CreatePackage>
-      <EnablePackageSigning>true</EnablePackageSigning>
-      <PackageSigningKey>Developer ID Installer: Richardson Oliver Law Group LLP (2B7MH5Z594)</PackageSigningKey>
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+      <RoiBuildActionsEnableMacNotarizedPackage>true</RoiBuildActionsEnableMacNotarizedPackage>
+      <RoiBuildActionsEnableRichardsonOliverMacSigningDefaults>true</RoiBuildActionsEnableRichardsonOliverMacSigningDefaults>
+      <RoiBuildActionsMacCodeSignEntitlements>Entitlements.plist</RoiBuildActionsMacCodeSignEntitlements>
+      <RoiBuildActionsEnableMacDistributionPackage>true</RoiBuildActionsEnableMacDistributionPackage>
+      <RoiBuildActionsMacDistributionPreparationTargets>ReplaceXmlText</RoiBuildActionsMacDistributionPreparationTargets>
     </PropertyGroup>
     <ItemGroup>
       <PackageReference Include="CsvHelper" Version="33.1.0" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.10" />
     </ItemGroup>
     <ItemGroup>
       <None Remove="configuration-file.txt" />
@@ -89,6 +84,11 @@
       <PropertyGroup Condition=" '$(DistributionFile)' == '' ">
         <DistributionFile>$(DistributionPath)distribution.xml</DistributionFile>
       </PropertyGroup>
+      <PropertyGroup>
+        <RoiBuildActionsMacDistributionFile>$(DistributionFile)</RoiBuildActionsMacDistributionFile>
+        <RoiBuildActionsMacDistributionResourcesPath>$(DistributionPath)</RoiBuildActionsMacDistributionResourcesPath>
+        <RoiBuildActionsMacComponentPackagePath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(OutputPath)', 'com.roipatents.crispledes.pkg'))</RoiBuildActionsMacComponentPackagePath>
+      </PropertyGroup>
       <XmlPoke XmlInputPath="$(DistributionFile)" Query="/installer-gui-script/title" Value="$(AssemblyName)"/>
       <XmlPoke XmlInputPath="$(DistributionFile)" Query="/installer-gui-script/choice[@id = 'default']/@title" Value="$(AssemblyName)"/>
       <XmlPoke XmlInputPath="$(DistributionFile)" Query="/installer-gui-script/choice[@id = 'default']/@versStr" Value="$(AssemblyVersion)"/>
@@ -96,12 +96,5 @@
       <XmlPoke XmlInputPath="$(DistributionFile)" Query="/installer-gui-script/choice[@id = 'com.roipatents.crispledes']/pkg-ref[@id = 'com.roipatents.crispledes']/@version" Value="$(AssemblyVersion)"/>
       <XmlPoke XmlInputPath="$(DistributionFile)" Query="/installer-gui-script/choice[@id = 'com.roipatents.crispledes']/pkg-ref[@id = 'com.roipatents.crispledes']" Value="com.roipatents.crispledes.pkg"/>
     </Target>
-    <Target Name="PreBuild" BeforeTargets="_DetectBuildType">
-      <Exec Command="dotnet restore" />
-    </Target>
-    <Target Name="PostPackage" AfterTargets="_CreateInstaller" Condition=" '$(Configuration)' == 'Release' ">
-      <Exec Command="xcrun pkgbuild --component &quot;$(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName).app&quot; --install-location /Applications --sign &quot;$(PackageSigningKey)&quot; --timestamp &quot;$(MSBuildProjectDirectory)/$(OutputPath)com.roipatents.crispledes.pkg&quot;" />
-      <Exec Command="xcrun productbuild --distribution &quot;$(DistributionFile)&quot; --package-path &quot;$(MSBuildProjectDirectory)/$(OutputPath)&quot; --resources &quot;$(DistributionPath)&quot; --sign &quot;$(PackageSigningKey)&quot; &quot;$(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName)-$(Version).pkg&quot;" />
-      <Exec Command="xcrun notarytool submit &quot;$(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName)-$(Version).pkg&quot; --keychain-profile &quot;Notary&quot; --wait &amp;&amp; xcrun stapler staple &quot;$(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName)-$(Version).pkg&quot;" />
-    </Target>
+    <Import Project="../eng/ROI.BuildActions/1.1.3/ROI.BuildActions.targets" />
 </Project>

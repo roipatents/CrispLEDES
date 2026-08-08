@@ -1,0 +1,56 @@
+<Project>
+  <!--
+    Public-safe vendoring of the macOS distribution, signing, notarization, and
+    validation lifecycle from ROI.BuildActions 1.1.3. It intentionally excludes
+    private-feed, 1Password, and Richardson Oliver internal configuration logic.
+  -->
+  <PropertyGroup Condition="'$(RoiBuildActionsEnableRichardsonOliverMacSigningDefaults)' == 'true'">
+    <RoiBuildActionsMacApplicationSigningKey Condition="'$(RoiBuildActionsMacApplicationSigningKey)' == ''">Developer ID Application: Richardson Oliver Law Group LLP (2B7MH5Z594)</RoiBuildActionsMacApplicationSigningKey>
+    <RoiBuildActionsMacInstallerSigningKey Condition="'$(RoiBuildActionsMacInstallerSigningKey)' == ''">Developer ID Installer: Richardson Oliver Law Group LLP (2B7MH5Z594)</RoiBuildActionsMacInstallerSigningKey>
+    <RoiBuildActionsNotaryToolKeychainProfile Condition="'$(RoiBuildActionsNotaryToolKeychainProfile)' == ''">Notary</RoiBuildActionsNotaryToolKeychainProfile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RoiBuildActionsEnableMacNotarizedPackage)' == 'true'">
+    <UseHardenedRuntime>true</UseHardenedRuntime>
+    <EnableCodeSigning>true</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>true</EnablePackageSigning>
+    <CodesignKey Condition="'$(CodesignKey)' == ''">$(RoiBuildActionsMacApplicationSigningKey)</CodesignKey>
+    <PackageSigningKey Condition="'$(PackageSigningKey)' == ''">$(RoiBuildActionsMacInstallerSigningKey)</PackageSigningKey>
+    <CodeSignEntitlements Condition="'$(CodeSignEntitlements)' == ''">$(RoiBuildActionsMacCodeSignEntitlements)</CodeSignEntitlements>
+    <RoiBuildActionsMacDistributionInstallLocation Condition="'$(RoiBuildActionsMacDistributionInstallLocation)' == ''">/Applications</RoiBuildActionsMacDistributionInstallLocation>
+  </PropertyGroup>
+
+  <Target Name="RoiBuildActionsBuildNotarizedMacPackage"
+          AfterTargets="Codesign"
+          DependsOnTargets="$(RoiBuildActionsMacDistributionPreparationTargets)"
+          Condition="'$(Configuration)' == 'Release' and '$(RoiBuildActionsEnableMacNotarizedPackage)' == 'true'">
+    <PropertyGroup>
+      <RoiBuildActionsMacApplicationBundlePath Condition="'$(RoiBuildActionsMacApplicationBundlePath)' == ''">$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(OutputPath)', '$(AssemblyName).app'))</RoiBuildActionsMacApplicationBundlePath>
+      <RoiBuildActionsMacPackagePath Condition="'$(RoiBuildActionsMacPackagePath)' == ''">$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(OutputPath)', '$(AssemblyName)-$(Version).pkg'))</RoiBuildActionsMacPackagePath>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(RoiBuildActionsMacApplicationBundlePath)')" Text="The signed macOS application bundle does not exist: $(RoiBuildActionsMacApplicationBundlePath)" />
+    <Error Condition="!Exists('$(RoiBuildActionsMacDistributionFile)')" Text="The macOS distribution XML does not exist: $(RoiBuildActionsMacDistributionFile)" />
+    <Error Condition="'$(CodesignKey)' == ''" Text="A notarized macOS package requires an application signing identity." />
+    <Error Condition="'$(PackageSigningKey)' == ''" Text="A notarized macOS package requires an installer signing identity." />
+    <Error Condition="'$(RoiBuildActionsNotaryToolKeychainProfile)' == ''" Text="A notarized macOS package requires a notarytool keychain profile." />
+    <Exec Command="/usr/bin/plutil -extract CFBundleShortVersionString raw &quot;$(RoiBuildActionsMacApplicationBundlePath)/Contents/Info.plist&quot;" ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" ItemName="_RoiBuildActionsBundleDisplayVersion" />
+    </Exec>
+    <Exec Command="/usr/bin/plutil -extract CFBundleVersion raw &quot;$(RoiBuildActionsMacApplicationBundlePath)/Contents/Info.plist&quot;" ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" ItemName="_RoiBuildActionsBundleVersion" />
+    </Exec>
+    <Error Condition="'@(_RoiBuildActionsBundleDisplayVersion)' != '$(Version)'" Text="The app bundle display version '@(_RoiBuildActionsBundleDisplayVersion)' does not match project version '$(Version)'." />
+    <Error Condition="'@(_RoiBuildActionsBundleVersion)' != '$(Version)'" Text="The app bundle version '@(_RoiBuildActionsBundleVersion)' does not match project version '$(Version)'." />
+    <MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(RoiBuildActionsMacComponentPackagePath)'));$([System.IO.Path]::GetDirectoryName('$(RoiBuildActionsMacPackagePath)'))" />
+    <Exec Command="xcrun pkgbuild --component &quot;$(RoiBuildActionsMacApplicationBundlePath)&quot; --install-location &quot;$(RoiBuildActionsMacDistributionInstallLocation)&quot; --sign &quot;$(PackageSigningKey)&quot; --timestamp &quot;$(RoiBuildActionsMacComponentPackagePath)&quot;" />
+    <Error Condition="!Exists('$(RoiBuildActionsMacComponentPackagePath)')" Text="pkgbuild did not create the expected component package: $(RoiBuildActionsMacComponentPackagePath)" />
+    <Exec Command="xcrun productbuild --distribution &quot;$(RoiBuildActionsMacDistributionFile)&quot; --package-path &quot;$([System.IO.Path]::GetDirectoryName('$(RoiBuildActionsMacComponentPackagePath)'))&quot; --resources &quot;$(RoiBuildActionsMacDistributionResourcesPath)&quot; --sign &quot;$(PackageSigningKey)&quot; &quot;$(RoiBuildActionsMacPackagePath)&quot;" />
+    <Error Condition="!Exists('$(RoiBuildActionsMacPackagePath)')" Text="productbuild did not create the expected distribution package: $(RoiBuildActionsMacPackagePath)" />
+    <Exec Command="xcrun notarytool submit &quot;$(RoiBuildActionsMacPackagePath)&quot; --keychain-profile &quot;$(RoiBuildActionsNotaryToolKeychainProfile)&quot; --wait" />
+    <Exec Command="xcrun stapler staple &quot;$(RoiBuildActionsMacPackagePath)&quot;" />
+    <Exec Command="xcrun stapler validate &quot;$(RoiBuildActionsMacPackagePath)&quot;" />
+    <Exec Command="pkgutil --check-signature &quot;$(RoiBuildActionsMacPackagePath)&quot;" />
+    <Exec Command="spctl --assess --type install --verbose=4 &quot;$(RoiBuildActionsMacPackagePath)&quot;" />
+  </Target>
+</Project>

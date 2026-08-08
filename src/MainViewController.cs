@@ -128,6 +128,10 @@ public partial class MainViewController : NSViewController
         foreach (var index in MessageInfoView.SelectedRows)
         {
             var messageInfo = Messages[index];
+            if (messageInfo is null)
+            {
+                continue;
+            }
             result.Append(((DateTime)messageInfo.Time).ToString("O"));
             result.Append('\t');
             result.Append(messageInfo.EntryType);

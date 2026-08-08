@@ -100,6 +100,8 @@ If issues are detected (e.g., incorrect timekeeper rate, overlong narratives, or
 
 3. (Optional) Update your configuration file to reflect your firm’s tax ID, timekeepers, and rates.
 
+The macOS Release build uses the public-safe vendored Build Actions 1.1.3 lifecycle under `eng/ROI.BuildActions/1.1.3`. It creates a Developer ID-signed distribution package, submits it to Apple for notarization, staples the ticket, and validates the final package. Private feed and secret-injection behavior are intentionally excluded.
+
 ## **Usage**
 
 1. Export invoices from FreshBooks as CSV.
@@ -184,4 +186,3 @@ Contributions are welcome\! Please fork the repo, submit pull requests, or open 
 ## **Attribution**
 
 CrispLEDES was created and is maintained by **Richardson Oliver LLP**.
-
