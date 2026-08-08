@@ -10,6 +10,6 @@
 - [x] Restore and build the production macOS project with zero warnings/errors.
 - [x] Build, sign, notarize, staple, and validate the public 1.5.8 package (SHA-256 `4244f56abe38fe625c2684d879a7e194fd141d756de479c2f11f329091466872`).
 - [x] Verify that the package contains the sanitized public configuration and no private configuration.
-- [ ] Commit and push separate structural and release-packaging changes to `main`.
-- [ ] Publish `v1.5.8` from the exact head of `main` with the verified package asset.
+- [x] Commit and push separate structural and release-packaging changes to `main`.
+- [x] Publish `v.1.5.8` from exact `main` commit `80472348528b5d55041a7107c4166611a68ff7d4` with the verified package asset.
 - [x] Keep the public repository excluded from JAMF; only the private package is MDM deployable.
