@@ -1,5 +1,13 @@
 # CrispLEDES 1.5.8 release
 
+## Fresh local Release rebuild (2026-09-15)
+
+- [x] Inventory and stop running CrispLEDES instances.
+- [x] Remove confirmed local app bundles and generated build outputs.
+- [x] Restore and build the macOS app in Release.
+- [x] Correct Release registrar preservation for storyboard-only Cocoa classes.
+- [x] Launch the fresh Release build and verify that it stays running.
+
 - [x] Reconcile and commit the existing macOS/MAUI project split.
   - [x] Upgrade the MAUI SQLite dependency closure to remove the high-severity `SQLitePCLRaw.lib.e_sqlite3` 2.1.10 advisory.
 - [x] Align the production macOS project with .NET 10 and version 1.5.8 package, assembly, and file stamps.

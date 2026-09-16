@@ -29,8 +29,8 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>true</ImplicitUsings>
         <SupportedOSPlatformVersion>12.0</SupportedOSPlatformVersion>
-        <!-- Preserve framework code used dynamically by CSV/XML processing in deployment builds. -->
-        <TrimMode Condition="'$(Configuration)' == 'Release'">copy</TrimMode>
+        <!-- Preserve framework and app code referenced dynamically by CSV/XML processing and storyboards. -->
+        <LinkMode Condition="'$(Configuration)' == 'Release'">None</LinkMode>
         <Version>1.5.8</Version>
         <Company>Richardson Oliver Insights, LLC</Company>
         <AssemblyVersion>1.5.8</AssemblyVersion>
