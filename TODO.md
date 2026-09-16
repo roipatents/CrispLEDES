@@ -1,4 +1,15 @@
-# CrispLEDES 1.5.8 release
+# CrispLEDES releases
+
+## CrispLEDES 1.5.9 release
+
+- [x] Preserve storyboard-visible Cocoa classes in Release builds.
+- [x] Align project, assembly, file, and bundle versions at 1.5.9.
+- [x] Build, sign, notarize, staple, and validate the public 1.5.9 package (SHA-256 `9c6758b8f1bbf7dc44841b35fe4ae1a0899dc61a776fd61faa2cbd9009a6b52c`).
+- [x] Verify the package contains only the sanitized public configuration.
+- [ ] Commit and push the release changes to `main`.
+- [ ] Publish `v.1.5.9` from the exact `main` commit with the verified package asset.
+
+## CrispLEDES 1.5.8 release
 
 ## Fresh local Release rebuild (2026-09-15)
 

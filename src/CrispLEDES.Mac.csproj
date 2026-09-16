@@ -31,10 +31,10 @@
         <SupportedOSPlatformVersion>12.0</SupportedOSPlatformVersion>
         <!-- Preserve framework and app code referenced dynamically by CSV/XML processing and storyboards. -->
         <LinkMode Condition="'$(Configuration)' == 'Release'">None</LinkMode>
-        <Version>1.5.8</Version>
+        <Version>1.5.9</Version>
         <Company>Richardson Oliver Insights, LLC</Company>
-        <AssemblyVersion>1.5.8</AssemblyVersion>
-        <FileVersion>1.5.8</FileVersion>
+        <AssemblyVersion>1.5.9</AssemblyVersion>
+        <FileVersion>1.5.9</FileVersion>
         <RootNamespace>CrispLEDES</RootNamespace>
         <AssemblyName>CrispLEDES</AssemblyName>
         <Description>Converts Freshbooks invoices in CSV format to LEDES files</Description>
