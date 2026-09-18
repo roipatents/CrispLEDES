@@ -28,6 +28,9 @@
     <PropertyGroup>
       <RoiBuildActionsMacApplicationBundlePath Condition="'$(RoiBuildActionsMacApplicationBundlePath)' == ''">$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(OutputPath)', '$(AssemblyName).app'))</RoiBuildActionsMacApplicationBundlePath>
       <RoiBuildActionsMacPackagePath Condition="'$(RoiBuildActionsMacPackagePath)' == ''">$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(OutputPath)', '$(AssemblyName)-$(Version).pkg'))</RoiBuildActionsMacPackagePath>
+      <RoiBuildActionsMacPackageStagingRoot Condition="'$(RoiBuildActionsMacPackageStagingRoot)' == ''">$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(IntermediateOutputPath)', 'roi-build-actions-package-root'))</RoiBuildActionsMacPackageStagingRoot>
+      <RoiBuildActionsMacComponentPlistPath Condition="'$(RoiBuildActionsMacComponentPlistPath)' == ''">$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(IntermediateOutputPath)', 'roi-build-actions-components.plist'))</RoiBuildActionsMacComponentPlistPath>
+      <RoiBuildActionsMacStagedApplicationBundlePath>$(RoiBuildActionsMacPackageStagingRoot)$(RoiBuildActionsMacDistributionInstallLocation)/$(AssemblyName).app</RoiBuildActionsMacStagedApplicationBundlePath>
     </PropertyGroup>
     <Error Condition="!Exists('$(RoiBuildActionsMacApplicationBundlePath)')" Text="The signed macOS application bundle does not exist: $(RoiBuildActionsMacApplicationBundlePath)" />
     <Error Condition="!Exists('$(RoiBuildActionsMacDistributionFile)')" Text="The macOS distribution XML does not exist: $(RoiBuildActionsMacDistributionFile)" />
@@ -40,10 +43,20 @@
     <Exec Command="/usr/bin/plutil -extract CFBundleVersion raw &quot;$(RoiBuildActionsMacApplicationBundlePath)/Contents/Info.plist&quot;" ConsoleToMSBuild="true">
       <Output TaskParameter="ConsoleOutput" ItemName="_RoiBuildActionsBundleVersion" />
     </Exec>
+    <Exec Command="/usr/bin/plutil -extract CFBundleIdentifier raw &quot;$(RoiBuildActionsMacApplicationBundlePath)/Contents/Info.plist&quot;" ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" ItemName="_RoiBuildActionsBundleIdentifier" />
+    </Exec>
     <Error Condition="'@(_RoiBuildActionsBundleDisplayVersion)' != '$(Version)'" Text="The app bundle display version '@(_RoiBuildActionsBundleDisplayVersion)' does not match project version '$(Version)'." />
     <Error Condition="'@(_RoiBuildActionsBundleVersion)' != '$(Version)'" Text="The app bundle version '@(_RoiBuildActionsBundleVersion)' does not match project version '$(Version)'." />
-    <MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(RoiBuildActionsMacComponentPackagePath)'));$([System.IO.Path]::GetDirectoryName('$(RoiBuildActionsMacPackagePath)'))" />
-    <Exec Command="xcrun pkgbuild --component &quot;$(RoiBuildActionsMacApplicationBundlePath)&quot; --install-location &quot;$(RoiBuildActionsMacDistributionInstallLocation)&quot; --sign &quot;$(PackageSigningKey)&quot; --timestamp &quot;$(RoiBuildActionsMacComponentPackagePath)&quot;" />
+    <Error Condition="'@(_RoiBuildActionsBundleIdentifier)' == ''" Text="The app bundle identifier is empty." />
+    <RemoveDir Directories="$(RoiBuildActionsMacPackageStagingRoot)" />
+    <Delete Files="$(RoiBuildActionsMacComponentPlistPath)" />
+    <MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(RoiBuildActionsMacStagedApplicationBundlePath)'));$([System.IO.Path]::GetDirectoryName('$(RoiBuildActionsMacComponentPackagePath)'));$([System.IO.Path]::GetDirectoryName('$(RoiBuildActionsMacPackagePath)'))" />
+    <Exec Command="/usr/bin/ditto --rsrc --extattr &quot;$(RoiBuildActionsMacApplicationBundlePath)&quot; &quot;$(RoiBuildActionsMacStagedApplicationBundlePath)&quot;" />
+    <Exec Command="xcrun pkgbuild --analyze --root &quot;$(RoiBuildActionsMacPackageStagingRoot)&quot; &quot;$(RoiBuildActionsMacComponentPlistPath)&quot;" />
+    <Exec Command="/usr/bin/plutil -replace 0.BundleIsRelocatable -bool false &quot;$(RoiBuildActionsMacComponentPlistPath)&quot;" />
+    <Exec Command="/usr/bin/codesign --verify --deep --strict --verbose=4 &quot;$(RoiBuildActionsMacStagedApplicationBundlePath)&quot;" />
+    <Exec Command="xcrun pkgbuild --root &quot;$(RoiBuildActionsMacPackageStagingRoot)&quot; --component-plist &quot;$(RoiBuildActionsMacComponentPlistPath)&quot; --identifier &quot;@(_RoiBuildActionsBundleIdentifier)&quot; --version &quot;$(Version)&quot; --install-location / --sign &quot;$(PackageSigningKey)&quot; --timestamp &quot;$(RoiBuildActionsMacComponentPackagePath)&quot;" />
     <Error Condition="!Exists('$(RoiBuildActionsMacComponentPackagePath)')" Text="pkgbuild did not create the expected component package: $(RoiBuildActionsMacComponentPackagePath)" />
     <Exec Command="xcrun productbuild --distribution &quot;$(RoiBuildActionsMacDistributionFile)&quot; --package-path &quot;$([System.IO.Path]::GetDirectoryName('$(RoiBuildActionsMacComponentPackagePath)'))&quot; --resources &quot;$(RoiBuildActionsMacDistributionResourcesPath)&quot; --sign &quot;$(PackageSigningKey)&quot; &quot;$(RoiBuildActionsMacPackagePath)&quot;" />
     <Error Condition="!Exists('$(RoiBuildActionsMacPackagePath)')" Text="productbuild did not create the expected distribution package: $(RoiBuildActionsMacPackagePath)" />

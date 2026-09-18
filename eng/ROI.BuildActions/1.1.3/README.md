@@ -6,6 +6,8 @@ Included behavior:
 
 - Developer ID application and installer signing
 - versioned distribution-package creation
+- non-relocatable application installation at the declared destination
+- embedded application-signature verification before packaging
 - Apple notarization and stapling
 - stapled-ticket, installer-signature, and Gatekeeper validation
 

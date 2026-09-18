@@ -1,5 +1,15 @@
 # CrispLEDES releases
 
+## CrispLEDES 1.5.10 release
+
+- [x] Align persisted window and table state identifiers with the current CrispLEDES bundle identifier.
+- [x] Align project, assembly, file, and bundle versions at 1.5.10.
+- [x] Make the installer preserve the signed app and prohibit relocation away from `/Applications`.
+- [x] Build, sign, notarize, staple, and validate the public 1.5.10 package (SHA-256 `72d1b1348326a366d84f44fe7dc1d61f876726374ad2d0aa055f5dc84acf27bd`).
+- [x] Verify the package contains only the sanitized sample configuration.
+- [ ] Commit and push the release changes to `main`.
+- [ ] Publish `v.1.5.10` from the exact `main` commit with the verified package asset.
+
 ## CrispLEDES 1.5.9 release
 
 - [x] Preserve storyboard-visible Cocoa classes in Release builds.
