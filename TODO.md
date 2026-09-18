@@ -7,8 +7,8 @@
 - [x] Make the installer preserve the signed app and prohibit relocation away from `/Applications`.
 - [x] Build, sign, notarize, staple, and validate the public 1.5.10 package (SHA-256 `72d1b1348326a366d84f44fe7dc1d61f876726374ad2d0aa055f5dc84acf27bd`).
 - [x] Verify the package contains only the sanitized sample configuration.
-- [ ] Commit and push the release changes to `main`.
-- [ ] Publish `v.1.5.10` from the exact `main` commit with the verified package asset.
+- [x] Commit and push the release changes to `main` (`d43d10b7f3b9f47bf3b1dbfae858a9ac1ea469d5`).
+- [x] Publish `v.1.5.10` from the exact `main` commit with the verified package asset.
 
 ## CrispLEDES 1.5.9 release
 
