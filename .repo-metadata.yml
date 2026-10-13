@@ -5,3 +5,23 @@ mdm_deploy: false
 # Allowed: One off, Preproduction, Production, Deprecated
 readiness: Production
 primary_owner: ttrias@richardsonoliver.com
+repository_kind: standalone
+project_type: dotnet-desktop-app
+domains:
+  - billing
+  - desktop
+languages:
+  - csharp
+runtimes:
+  - dotnet
+  - macos
+  - maccatalyst
+package_managers:
+  - nuget
+build_tools:
+  - dotnet
+validation:
+  commands:
+    - "dotnet build src/CrispLEDES.sln"
+    - "dotnet build CrispLEDES/CrispLEDES.csproj -f net10.0-maccatalyst"
+  notes: "Validate the affected native macOS or MAUI component. AGENTS.md records the absence of an automated test project."
